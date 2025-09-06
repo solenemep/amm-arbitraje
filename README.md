@@ -6,6 +6,7 @@
 .
 ├── README.md
 ├── input
+│ ├── pairs.json
 │ ├── paths.json
 │ └── tokens.json
 ├── output
@@ -15,29 +16,10 @@
 ├── **pycache**
 ├── config.py
 ├── main.py
+├── pairs.py
 ├── processor.py
 ├── storage.py
 └── utils.py
-```
-
-## Result logs
-
-Loaded data for **1534** pairs.
-Found **67** opportunities.
-
-```json
-{
-  "best_opportunity": {
-    "initial_amount": 1e18,
-    "final_amount": 1.1431002632244142e20,
-    "profit": 1.1331002632244142e20,
-    "path": [
-      ["USDT", ["0x0d4a11d5EEaaC28EC3F61d100daF4d40471f1852"]],
-      ["USD", ["0x50b6071561f068963Bcfe2B341126cd6aCcaFAFb"]],
-      ["WETH", ["0x582E3DA39948C6339433008703211aD2c13EB2ac"]]
-    ]
-  }
-}
 ```
 
 ## How It Works
@@ -78,6 +60,16 @@ Replace `YOUR_INFURA_PROJECT_ID` with your actual Infura project ID.
 
 ## Run the Script
 
+First, you need to extract the token0/token1 addresses for each pair by running:
+
+```bash
+python3 src/pairs.py
+```
+
+This will create a JSON file in the output directory with the token pairs information.
+
+Then, you can run the processor to find the best opportunity by running:
+
 ```bash
 python3 src/main.py
 ```
@@ -85,7 +77,7 @@ python3 src/main.py
 Make sure you have installed all dependencies (e.g., web3) and configured the config file accordingly.
 
 ```bash
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 ## Function Overview
@@ -93,29 +85,41 @@ pip install requirements.txt
 ### main.py
 
 - **main()**  
-  The entry point of the script.
-  - Connects to the Ethereum network via Infura.
-  - Loads token swap paths from the configured JSON file.
-  - Extracts all unique liquidity pairs from those paths.
-  - Fetches on-chain reserve and token data for each pair.
-  - Processes each path to detect profitable arbitrage opportunities using `process_path`.
-  - Saves found opportunities to a JSON output file.
+  The entry point of the script. Handles all steps from connecting to Ethereum, loading paths, extracting pairs, fetching reserves, processing arbitrage, and saving results.
+
+### pairs.py
+
+- **pairs()**  
+  Connects to the Ethereum network, loads swap paths, extracts all unique pair addresses, fetches token0/token1 for each pair using `get_pairs_tokens`, and saves the result to a JSON file defined by `PAIRS_FILE`. This file is used as a reference for token pairs in the rest of the project. Run this script before running the main arbitrage processor to ensure you have up-to-date token pair information.
 
 ### processor.py
 
+- **process_paths(w3, paths, data)**  
+  Iterates over a list of swap paths, calls `process_path` for each, and collects all profitable opportunities into a list. Returns all found opportunities for further analysis or selection.
+
 - **process_path(w3, path, data)**  
-  Simulates token swaps along a given path:
-  - Starts with an initial amount of WETH.
-  - For each hop, calculates the best possible output amount by checking all pairs available for that hop.
-  - Updates the current token and amount after each hop.
-  - Returns opportunity details (initial amount, final amount, profit, and human-readable path) if the final token is WETH and profit is positive.
+  Simulates token swaps along a given path, updating token and amount at each hop, and returns opportunity details if profitable.
+
+- **process_hops(token_in, amount_in, hops, data)**  
+  For a given input token and amount, iterates over all possible pairs (hops) for a swap step, normalizes for decimals, and returns the best output amount and corresponding pair.
+
+### storage.py
+
+- **load_json(path)**  
+  Reads and parses JSON data from a file.
+
+- **save_json(data, path)**  
+  Saves data as pretty-formatted JSON to a file.
 
 ### utils.py
 
 - **to_checksum(address)**  
   Converts Ethereum addresses to their checksum format for consistency and correctness.
 
-- **get_pair_tokens(w3, pair)**  
+- **get_unique_pairs(paths)**  
+  Extracts and returns a set of all unique pair addresses from the provided swap paths. Used to identify which pairs need to be queried for token and reserve data.
+
+- **get_pairs_tokens(w3, pair)**  
   Retrieves the two tokens that make up a Uniswap liquidity pair from the blockchain.
 
 - **get_pairs_data(w3, pairs)**  
@@ -127,16 +131,11 @@ pip install requirements.txt
 - **readable(path)**  
   Translates token addresses in a path to their symbols by referencing the token metadata file, making output easier to interpret.
 
+- **load_token_decimals(address)**  
+  Looks up and returns the decimals value for a given token address from the tokens metadata JSON file. If the token is not found or the decimals field is missing, it returns 18 by default. This ensures calculations are accurate for tokens with non-standard decimals.
+
 - **get_best_opportunity(opportunities)**  
   Returns the opportunity with the highest profit from a list of opportunities. If the list is empty, returns None.
-
-### storage.py
-
-- **load_json(path)**  
-  Reads and parses JSON data from a file.
-
-- **save_json(data, path)**  
-  Saves data as pretty-formatted JSON to a file.
 
 ## Customisation
 
@@ -147,6 +146,7 @@ pip install requirements.txt
 
 - Add more checks on data lecture and treatment. The current code is expecting correct paths and does not manage malicious or incorrect data.
 - Add dynamic possibility to change input token and amount, with related data selection.
+- Include gas fee calculations to be more precise on wether swap gas fee don't cancel yield.
 - Add .env data and .env.example to store Infura key for example.
 
 ## Requirements

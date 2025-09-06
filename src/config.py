@@ -9,6 +9,7 @@ UNISWAP_VIEW_ADDRESS = "0x416355755f32b2710ce38725ed0fa102ce7d07e6"
 # === Paths ===
 PATHS_FILE = "input/paths.json"
 TOKENS_FILE = "input/tokens.json"
+PAIRS_FILE = "input/pairs.json"
 OUTPUT_FILE = "output/opportunity.json"
 
 # === ABIs ===
