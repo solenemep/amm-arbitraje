@@ -69,6 +69,10 @@ python3 src/main.py
 
 Make sure you have installed all dependencies (e.g., web3) and configured the config file accordingly.
 
+```bash
+pip install requirements.txt
+```
+
 ## Function Overview
 
 ### main.py
