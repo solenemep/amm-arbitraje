@@ -2,6 +2,7 @@
 
 ## Project Structure
 
+```bash
 .
 ├── README.md
 ├── input
@@ -17,6 +18,7 @@
 ├── processor.py
 ├── storage.py
 └── utils.py
+```
 
 ## Result logs
 
