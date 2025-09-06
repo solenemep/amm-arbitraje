@@ -2,7 +2,7 @@ import json
 from web3 import Web3
 from config import INFURA_URL, PATHS_FILE, OUTPUT_FILE
 from storage import load_json, save_json
-from utils import get_pairs_data
+from utils import get_pairs_data, get_best_opportunity
 from processor import process_path
 
 def main():
@@ -28,7 +28,8 @@ def main():
             opportunities.append(opportunity)
 
     print(f"Found {len(opportunities)} opportunities")
-    save_json(opportunities, OUTPUT_FILE)
+    best_opportunity = get_best_opportunity(opportunities)
+    save_json(best_opportunity, OUTPUT_FILE)
 
 if __name__ == "__main__":
     main()

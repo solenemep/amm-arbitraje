@@ -9,7 +9,7 @@
 │ ├── paths.json
 │ └── tokens.json
 ├── output
-│ └── opportunities.json
+│ └── opportunity.json
 ├── requirements.txt
 └── src
 ├── **pycache**
@@ -25,6 +25,21 @@
 Loaded data for **1534** pairs.
 Found **67** opportunities.
 
+```json
+{
+  "best_opportunity": {
+    "initial_amount": 1e18,
+    "final_amount": 1.1431002632244142e20,
+    "profit": 1.1331002632244142e20,
+    "path": [
+      ["USDT", ["0x0d4a11d5EEaaC28EC3F61d100daF4d40471f1852"]],
+      ["USD", ["0x50b6071561f068963Bcfe2B341126cd6aCcaFAFb"]],
+      ["WETH", ["0x582E3DA39948C6339433008703211aD2c13EB2ac"]]
+    ]
+  }
+}
+```
+
 ## How It Works
 
 This project analyzes token swap paths on Uniswap (or similar AMMs) to identify potential arbitrage opportunities, starting and ending with **WETH**. It fetches on-chain reserves for the involved trading pairs and simulates swaps to calculate profitability.
@@ -38,8 +53,8 @@ Python is ideal for this AMM imbalance detection because it balances fast develo
 Here is an example of what the output looks like :
 
 ```json
-[
-  {
+{
+  "opportunity": {
     "initial_amount": 1000000000000000000,
     "final_amount": 1200000000000000000,
     "profit": 200000000000000000,
@@ -48,7 +63,7 @@ Here is an example of what the output looks like :
       ["DAI", ["0xPairAddress2"]]
     ]
   }
-]
+}
 ```
 
 ## Configuration
@@ -111,6 +126,9 @@ pip install requirements.txt
 
 - **readable(path)**  
   Translates token addresses in a path to their symbols by referencing the token metadata file, making output easier to interpret.
+
+- **get_best_opportunity(opportunities)**  
+  Returns the opportunity with the highest profit from a list of opportunities. If the list is empty, returns None.
 
 ### storage.py
 

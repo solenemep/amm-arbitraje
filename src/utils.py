@@ -47,3 +47,6 @@ def readable(path):
         [tokens.get(to_checksum(token_out), token_out), pairs]
         for token_out, pairs in path
     ]
+
+def get_best_opportunity(opportunities):
+    return max(opportunities, key=lambda opportunity: opportunity["profit"])

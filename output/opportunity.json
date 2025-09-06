@@ -1,0 +1,25 @@
+{
+  "initial_amount": 1e+18,
+  "final_amount": 1.1431002632244142e+20,
+  "profit": 1.1331002632244142e+20,
+  "path": [
+    [
+      "USDT",
+      [
+        "0x0d4a11d5EEaaC28EC3F61d100daF4d40471f1852"
+      ]
+    ],
+    [
+      "USD",
+      [
+        "0x50b6071561f068963Bcfe2B341126cd6aCcaFAFb"
+      ]
+    ],
+    [
+      "WETH",
+      [
+        "0x582E3DA39948C6339433008703211aD2c13EB2ac"
+      ]
+    ]
+  ]
+}
