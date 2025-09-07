@@ -57,7 +57,8 @@ def get_amount_out(amount_in, reserve_in, reserve_out):
     amount_in_with_fee = amount_in * 997
     numerator = amount_in_with_fee * reserve_out
     denominator = reserve_in * 1000 + amount_in_with_fee 
-    return numerator // denominator
+    amount_out = numerator // denominator 
+    return amount_out
 
 def readable(path):
     tokens = {to_checksum(token["address"]): token.get("symbol", "") for token in load_json(TOKENS_FILE)}
@@ -68,9 +69,25 @@ def readable(path):
 
 def load_token_decimals():
     return {
-        to_checksum(t["address"]): int(t.get("decimals", 18))
-        for t in load_json(TOKENS_FILE)
+        to_checksum(token["address"]): int(token.get("decimals", 18))
+        for token in load_json(TOKENS_FILE)
     }
+
+def normalize_to_18(value, decimals):
+    if decimals < 18:
+        return value * 10 ** (18 - decimals)
+    elif decimals > 18:
+        return value // 10 ** (decimals - 18)
+    else:
+        return value
+
+def denormalize_from_18(value_18, decimals):
+    if decimals < 18:
+        return value_18 // 10 ** (18 - decimals)
+    elif decimals > 18:
+        return value_18 * 10 ** (decimals - 18)
+    else:
+        return value_18
 
 def get_best_opportunity(opportunities):
     return max(opportunities, key=lambda opportunity: opportunity["profit"])

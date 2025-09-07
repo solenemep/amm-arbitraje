@@ -1,18 +1,24 @@
 {
-  "initial_amount": 1,
-  "final_amount": 3500065305307,
-  "profit": 3500065305306,
+  "initial_amount": 1000000000000000000,
+  "final_amount": 114308881653534417325,
+  "profit": 113308881653534417325,
   "path": [
     [
-      "UWL",
+      "USDT",
       [
-        "0x9d4b552C992ee3B863F3b51E95E46eCf38c21429"
+        "0x0d4a11d5EEaaC28EC3F61d100daF4d40471f1852"
+      ]
+    ],
+    [
+      "USD",
+      [
+        "0x50b6071561f068963Bcfe2B341126cd6aCcaFAFb"
       ]
     ],
     [
       "WETH",
       [
-        "0x0040a2CEBc65894BC2cFb57565f9ACfa33Fab137"
+        "0x582E3DA39948C6339433008703211aD2c13EB2ac"
       ]
     ]
   ]

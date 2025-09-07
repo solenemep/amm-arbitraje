@@ -1,10 +1,10 @@
 from config import WETH_ADDRESS
-from utils import to_checksum, get_amount_out, readable, load_token_decimals
+from utils import to_checksum, get_amount_out, readable, load_token_decimals, normalize_to_18, denormalize_from_18
 
 def process_paths(w3, paths, data):
     decimals_map = load_token_decimals()
     token_init = to_checksum(WETH_ADDRESS)
-    amount_init = 10**(18 - decimals_map.get(token_init, 18))
+    amount_init = 10 ** decimals_map.get(token_init, 18)
 
     opportunities = []
     for path in paths:
@@ -21,7 +21,7 @@ def process_path(path, data, decimals_map, token_init, amount_init):
     for token_out, hops in path:
         best_amount_out, best_hop = process_hops(token_in, amount_in, hops, data, decimals_map)
         if best_hop is None:
-            return None  # Skip path if no valid hop
+            return None
 
         token_in = to_checksum(token_out)
         amount_in = best_amount_out
@@ -61,12 +61,12 @@ def process_hops(token_in, amount_in, hops, data, decimals_map):
         decimals_in = decimals_map.get(token_in, 18)
         decimals_out = decimals_map.get(token_out, 18)
 
-        amount_in_18 = amount_in * 10**(18 - decimals_in)
-        reserve_in_18 = reserve_in * 10**(18 - decimals_in)
-        reserve_out_18 = reserve_out * 10**(18 - decimals_out)
+        amount_in_18 = normalize_to_18(amount_in, decimals_in)
+        reserve_in_18 = normalize_to_18(reserve_in, decimals_in)
+        reserve_out_18 = normalize_to_18(reserve_out, decimals_out)
 
         amount_out_18 = get_amount_out(amount_in_18, reserve_in_18, reserve_out_18)
-        amount_out = amount_out_18 // 10**(18 - decimals_out)
+        amount_out = denormalize_from_18(amount_out_18, decimals_out)
 
         if amount_out > best_amount_out:
             best_amount_out = amount_out
