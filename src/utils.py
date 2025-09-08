@@ -67,27 +67,5 @@ def readable(path):
         for token_out, pairs in path
     ]
 
-def load_token_decimals():
-    return {
-        to_checksum(token["address"]): int(token.get("decimals", 18))
-        for token in load_json(TOKENS_FILE)
-    }
-
-def normalize_to_18(value, decimals):
-    if decimals < 18:
-        return value * 10 ** (18 - decimals)
-    elif decimals > 18:
-        return value // 10 ** (decimals - 18)
-    else:
-        return value
-
-def denormalize_from_18(value_18, decimals):
-    if decimals < 18:
-        return value_18 // 10 ** (18 - decimals)
-    elif decimals > 18:
-        return value_18 * 10 ** (decimals - 18)
-    else:
-        return value_18
-
 def get_best_opportunity(opportunities):
     return max(opportunities, key=lambda opportunity: opportunity["profit"])

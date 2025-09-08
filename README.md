@@ -131,15 +131,6 @@ pip install -r requirements.txt
 - **readable(path)**  
   Translates token addresses in a path to their symbols by referencing the token metadata file, making output easier to interpret.
 
-- **load_token_decimals(address)**  
-  Looks up and returns the decimals value for a given token address from the tokens metadata JSON file. If the token is not found or the decimals field is missing, it returns 18 by default. This ensures calculations are accurate for tokens with non-standard decimals.
-
-- **normalize_to_18(amount, decimals)**  
-  Converts a token amount with any decimals to the equivalent value in 18 decimals, using integer math. Handles both cases where decimals are less than or greater than 18.
-
-- **denormalize_from_18(amount_18, decimals)**  
-  Converts an amount in 18 decimals back to the token's native decimals, using integer math. Handles both cases where decimals are less than or greater than 18.
-
 - **get_best_opportunity(opportunities)**  
   Returns the opportunity with the highest profit from a list of opportunities. If the list is empty, returns None.
 
