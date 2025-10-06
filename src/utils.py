@@ -21,10 +21,12 @@ def get_pairs_tokens(w3, pairs):
         contract = w3.eth.contract(address=to_checksum(pair), abi=UNISWAP_CONTRACT_ABI)
         token0 = contract.functions.token0().call(block_identifier=block)
         token1 = contract.functions.token1().call(block_identifier=block)
+        reserves = contract.functions.getReserves().call(block_identifier=block)
         
         tokens[pair] = {
             "token0": to_checksum(token0),
             "token1": to_checksum(token1),
+            "timestamp": reserves[2]
         }
     return tokens
 
@@ -43,13 +45,15 @@ def get_pairs_data(w3, pairs):
         pair_tokens = pairs_tokens.get(pair)
         token0 = to_checksum(pair_tokens["token0"])
         token1 = to_checksum(pair_tokens["token1"])
+        timestamp = pair_tokens["timestamp"]
         reserve0, reserve1 = pairs_reserves[i * 2], pairs_reserves[i * 2 + 1]
         
         data[pair] = {
             "token0": token0,
             "token1": token1,
             "reserve0": reserve0,
-            "reserve1": reserve1
+            "reserve1": reserve1, 
+            "timestamp": timestamp
         }
     return data
 

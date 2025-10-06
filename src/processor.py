@@ -47,6 +47,10 @@ def process_hops(token_in, amount_in, hops, data):
 
         token0, token1 = pair_data["token0"], pair_data["token1"]
         reserve0, reserve1 = pair_data["reserve0"], pair_data["reserve1"]
+        timestamp = pair_data["timestamp"]
+
+        if timestamp < 170016400: # 01/08/2025 00:00:00 GMT
+            continue
 
         if token_in == token0:
             reserve_in, reserve_out = reserve0, reserve1
